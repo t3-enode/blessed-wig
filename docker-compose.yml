@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: blessed_wigs_web
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_DEBUG=False
+      - DJANGO_SECRET_KEY=change-in-production-blessed-wigs-2026-key
+    volumes:
+      - media_volume:/app/media
+      - db_volume:/app/data
+
+volumes:
+  media_volume:
+  db_volume:

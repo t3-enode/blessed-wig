@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Request a Product Refund • {{ store_settings.store_name }}{% endblock %}
+
+{% block content %}
+<div class="bg-white min-h-[85vh] py-12">
+    <div class="container mx-auto px-4 max-w-2xl">
+        
+        <div class="bg-white rounded-3xl border border-milk-border p-6 sm:p-10 shadow-lg space-y-6">
+            
+            <div class="text-center space-y-2 border-b border-milk-border pb-6">
+                <div class="w-12 h-12 mx-auto rounded-full bg-burntorange/10 text-burntorange flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path>
+                    </svg>
+                </div>
+                <h1 class="font-serif text-3xl font-bold text-burgundy">Customer Refund Request</h1>
+                <p class="text-xs text-gray-500 max-w-md mx-auto">
+                    At Blessed Wigs, your satisfaction is guaranteed. Fill out this form and our admin team will review and process your reversal immediately.
+                </p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+
+                <!-- Product & Order Details -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Product ID *</label>
+                        <input type="text" name="product_id" value="{{ initial_product_id }}" required placeholder="e.g. BW-101" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30 font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Order Number *</label>
+                        <input type="text" name="order_number" value="{{ initial_order_number }}" required placeholder="e.g. ORD-A8492" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30 font-mono">
+                    </div>
+                </div>
+
+                <!-- Customer Details -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Your Full Name *</label>
+                        <input type="text" name="customer_name" required placeholder="Name on order" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Email Address *</label>
+                        <input type="email" name="customer_email" required placeholder="Email address" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Phone / WhatsApp *</label>
+                        <input type="tel" name="customer_phone" required placeholder="Phone number" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30">
+                    </div>
+                </div>
+
+                <!-- Bank Reversal Info -->
+                <div class="bg-milk p-4 rounded-2xl border border-milk-border space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-burgundy">Your Bank Details for Refund Reversal</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Bank Name *</label>
+                            <input type="text" name="bank_name" required placeholder="e.g. GTBank / Kuda" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-xs focus:border-burntorange outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Account Number *</label>
+                            <input type="text" name="account_number" required placeholder="10-digit number" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-xs focus:border-burntorange outline-none bg-white font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Account Name *</label>
+                            <input type="text" name="account_name" required placeholder="Full account name" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-xs focus:border-burntorange outline-none bg-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reason & Proof -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Reason for Refund Request *</label>
+                    <textarea name="reason" rows="3" required placeholder="Please describe why you are requesting a refund for this wig unit..." class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Upload Photo Proof (Optional)</label>
+                    <input type="file" name="proof_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-burgundy file:text-white hover:file:bg-burgundy-light cursor-pointer">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" class="w-full py-4 bg-burntorange hover:bg-burntorange-dark text-white rounded-2xl font-bold text-sm shadow-md transition-all">
+                        Submit Refund Request (Dispatches to Admin)
+                    </button>
+                    <p class="text-center text-[11px] text-gray-400 mt-2">
+                        Product ID will be logged and submitted directly to the store manager.
+                    </p>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

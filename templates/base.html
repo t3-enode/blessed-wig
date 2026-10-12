@@ -1,0 +1,375 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ store_settings.store_name }} â€¢ Luxury Wigs & Virgin Hair{% endblock %}</title>
+    
+    <!-- Google Fonts: Luxury Editorial Serif & Clean Modern Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (CDN for instant, responsive styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        burgundy: {
+                            DEFAULT: '#6B1D2F',
+                            light: '#802339',
+                            dark: '#4F1220',
+                        },
+                        burntorange: {
+                            DEFAULT: '#D9531E',
+                            light: '#E66835',
+                            dark: '#B53E10',
+                        },
+                        milk: {
+                            DEFAULT: '#FAF7F2',
+                            card: '#F6F2EB',
+                            border: '#EDE6DA',
+                        },
+                        silkpink: {
+                            DEFAULT: '#F5C2B8',
+                            soft: '#FDF0ED',
+                            accent: '#F9D8D2',
+                        },
+                        luxuryblack: '#141414',
+                        buygreen: {
+                            DEFAULT: '#198754',
+                            hover: '#146C43',
+                            light: '#E8F5E9',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Smooth scrolling across page */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: #FFFFFF;
+            color: #141414;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Subtle luxury glassmorphism */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF7F2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E66835;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6B1D2F;
+        }
+
+        /* Animated shimmer for discounts */
+        @keyframes subtlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .pulse-badge {
+            animation: subtlePulse 3s infinite ease-in-out;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-white min-h-screen flex flex-col antialiased selection:bg-silkpink-accent selection:text-burgundy">
+
+    <!-- Top Announcement Bar (Burgundy & Silk Pink Accents) -->
+    <div class="bg-burgundy text-white py-2 px-4 text-xs md:text-sm font-medium text-center relative overflow-hidden">
+        <div class="container mx-auto flex items-center justify-between">
+            <span class="hidden md:inline text-silkpink tracking-wider uppercase text-[11px] font-semibold">âœ¨ Certified Raw Virgin Wigs</span>
+            <p class="mx-auto flex items-center gap-2">
+                <span class="inline-block w-2 h-2 rounded-full bg-burntorange animate-ping"></span>
+                <span>{{ store_settings.announcement_bar }}</span>
+            </p>
+            <a href="{% url 'wigs:refund_request' %}" class="hidden md:inline text-silkpink-accent hover:text-white underline text-[11px] transition-colors">Refund Service</a>
+        </div>
+    </div>
+
+    <!-- Personalized Welcome Banner -->
+    <div id="personalized-welcome-banner" class="bg-milk border-b border-milk-border py-2 px-4 text-center text-xs md:text-sm text-luxuryblack transition-all">
+        <div class="container mx-auto flex items-center justify-center gap-2">
+            <span class="text-burgundy font-serif italic text-base md:text-lg">Welcome,</span>
+            <span id="displayed-user-name" class="font-bold text-burgundy cursor-pointer hover:underline" title="Click to change your name">Gorgeous</span>
+            <span class="text-gray-400">|</span>
+            <button onclick="promptUserName()" class="text-[11px] text-burntorange font-medium hover:underline flex items-center gap-1">
+                <span>(edit name)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="sticky top-0 z-40 glass-nav border-b border-gray-100 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="{% url 'wigs:index' %}" class="flex flex-col group">
+                <span class="font-serif text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-burgundy group-hover:text-burntorange transition-colors">
+                    {{ store_settings.store_name }}
+                </span>
+                <span class="text-[10px] uppercase tracking-[0.25em] text-gray-500 font-semibold -mt-1">
+                    Luxury Wigs & Hair
+                </span>
+            </a>
+
+            <!-- Quick Links & Actions -->
+            <div class="flex items-center gap-3 sm:gap-5">
+                <a href="{% url 'wigs:index' %}#collection" class="hidden sm:inline-block text-sm font-medium text-gray-700 hover:text-burgundy transition-colors">
+                    Collection
+                </a>
+                
+                <a href="{% url 'wigs:refund_request' %}" class="text-xs sm:text-sm font-medium text-gray-600 hover:text-burntorange transition-colors">
+                    Refunds
+                </a>
+
+                <!-- WhatsApp Quick Link -->
+                {% if store_settings.whatsapp_number %}
+                <a href="https://wa.me/{{ store_settings.whatsapp_number }}?text=Hello%20Blessed%20Wigs,%20I%20am%20inquiring%20about%20your%20luxury%20wigs" target="_blank" rel="noopener" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-milk border border-milk-border text-xs font-semibold text-gray-800 hover:bg-silkpink-soft transition-all">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>Chat Admin</span>
+                </a>
+                {% endif %}
+
+                <!-- Cart Button (Key 3 Trigger) -->
+                <a href="{% url 'wigs:cart_view' %}" class="relative p-2.5 rounded-full bg-milk border border-milk-border hover:bg-silkpink-soft transition-all flex items-center justify-center group" aria-label="View Shopping Cart">
+                    <svg class="w-5 h-5 text-burgundy group-hover:text-burntorange transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                    </svg>
+                    <span id="nav-cart-badge" class="absolute -top-1 -right-1 bg-burntorange text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
+                        {{ cart_count }}
+                    </span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Global Messages Toast -->
+    {% if messages %}
+    <div class="container mx-auto px-4 mt-4">
+        {% for message in messages %}
+        <div class="p-4 mb-3 rounded-lg text-sm flex items-center justify-between {% if message.tags == 'success' %}bg-emerald-50 text-emerald-900 border border-emerald-200{% else %}bg-amber-50 text-amber-900 border border-amber-200{% endif %}">
+            <span>{{ message }}</span>
+            <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-700 ml-4">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Body Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Global "Ask" Modal (Key 2) -->
+    <div id="askModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-milk-border relative max-h-[90vh] overflow-y-auto fade-in">
+            <button onclick="closeAskModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold leading-none">&times;</button>
+            
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-burntorange/10 flex items-center justify-center text-burntorange">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-serif text-2xl font-bold text-burgundy">Ask About This Wig</h3>
+                    <p class="text-xs text-gray-500">Instant direct question to our lead styling admin</p>
+                </div>
+            </div>
+
+            <div id="askModalWigBadge" class="bg-milk p-3 rounded-xl border border-milk-border mb-4 text-xs flex justify-between items-center">
+                <span class="font-bold text-burgundy" id="askModalWigTitle">Select a Wig</span>
+                <span class="text-burntorange font-mono font-semibold" id="askModalWigId">#WIG-ID</span>
+            </div>
+
+            <form action="{% url 'wigs:ask_inquiry' %}" method="POST" id="askInquiryForm" class="space-y-4">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" id="askFormProductId">
+                
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Your Name</label>
+                    <input type="text" name="customer_name" id="askCustomerName" required class="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30" placeholder="e.g. Sandra Okeke">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">WhatsApp or Phone Number</label>
+                    <input type="text" name="customer_contact" required class="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30" placeholder="e.g. +234 810 123 4567">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Your Question or Custom Request</label>
+                    <textarea name="message" rows="3" required class="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30" placeholder="Ask about lace tint, head size customization, delivery times, or human hair grade..."></textarea>
+                </div>
+
+                <!-- Quick Prompt Buttons -->
+                <div class="flex flex-wrap gap-1.5 text-[11px]">
+                    <button type="button" onclick="fillQuickQuestion('Can I get this styled in a side part before shipping?')" class="bg-silkpink-soft text-burgundy px-2.5 py-1 rounded-full border border-silkpink/40 hover:bg-silkpink-accent transition-colors">+ Side Part Style?</button>
+                    <button type="button" onclick="fillQuickQuestion('Is this transparent HD lace or Swiss lace?')" class="bg-silkpink-soft text-burgundy px-2.5 py-1 rounded-full border border-silkpink/40 hover:bg-silkpink-accent transition-colors">+ HD Lace type?</button>
+                    <button type="button" onclick="fillQuickQuestion('How quickly can this be dispatched to my city?')" class="bg-silkpink-soft text-burgundy px-2.5 py-1 rounded-full border border-silkpink/40 hover:bg-silkpink-accent transition-colors">+ Delivery time?</button>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-burntorange hover:bg-burntorange-dark text-white font-semibold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                        <span>Send Question to Admin</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Luxury Footer (Milk, Burgundy & Silk Pink Accents) -->
+    <footer class="bg-milk border-t border-milk-border mt-20 text-gray-700">
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Col 1: Store Intro -->
+                <div class="space-y-3 md:col-span-1">
+                    <h3 class="font-serif text-2xl font-bold text-burgundy">{{ store_settings.store_name }}</h3>
+                    <p class="text-xs leading-relaxed text-gray-600">{{ store_settings.tagline }}</p>
+                    <div class="pt-2 flex gap-3 text-burgundy">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-white border border-milk-border text-burgundy">
+                            â˜… 100% Raw Virgin Hair
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold bg-white border border-milk-border text-burntorange">
+                            âš¡ 6% Off All Wigs
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Col 2: Official Bank Accounts Display (For Customer Trust) -->
+                <div class="space-y-2 md:col-span-2 bg-white p-5 rounded-2xl border border-milk-border shadow-sm">
+                    <h4 class="text-xs uppercase font-bold tracking-wider text-burgundy">Official Verified Payment Accounts</h4>
+                    <p class="text-[11px] text-gray-500 mb-3">All orders receive an instant 6% discount when paid via direct transfer to either account below:</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div class="p-3 rounded-xl bg-milk border border-milk-border">
+                            <div class="text-[10px] text-burgundy font-bold uppercase tracking-wider">Account #1</div>
+                            <div class="font-bold text-gray-900">{{ store_settings.bank_1_name }}</div>
+                            <div class="font-mono text-burntorange font-bold text-sm tracking-wide">{{ store_settings.bank_1_account_number }}</div>
+                            <div class="text-[11px] text-gray-600 truncate">{{ store_settings.bank_1_account_name }}</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-milk border border-milk-border">
+                            <div class="text-[10px] text-burgundy font-bold uppercase tracking-wider">Account #2</div>
+                            <div class="font-bold text-gray-900">{{ store_settings.bank_2_name }}</div>
+                            <div class="font-mono text-burntorange font-bold text-sm tracking-wide">{{ store_settings.bank_2_account_number }}</div>
+                            <div class="text-[11px] text-gray-600 truncate">{{ store_settings.bank_2_account_name }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Col 3: Customer Care & Blessed Portal Link -->
+                <div class="space-y-3 text-xs">
+                    <h4 class="uppercase font-bold tracking-wider text-burgundy">Customer Care</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'wigs:refund_request' %}" class="hover:text-burntorange transition-colors font-medium">ðŸ” Request a Product Refund</a></li>
+                        <li><a href="{% url 'wigs:index' %}#faq" class="hover:text-burntorange transition-colors">Wig Maintenance & Care</a></li>
+                        <li><a href="{% url 'wigs:blessed_dashboard' %}" class="text-gray-400 hover:text-burgundy transition-colors">ðŸ” Blessed Admin Portal</a></li>
+                        <li><a href="/admin/" class="text-gray-400 hover:text-burgundy transition-colors">Django Admin Suite</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-milk-border flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500">
+                <p>&copy; 2026 {{ store_settings.store_name }}. Crafted with luxury & care.</p>
+                <p class="mt-2 sm:mt-0 font-medium text-burgundy">Designed for Queens âœ¨</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Client Script -->
+    <script>
+        // Personalized Customer Name Management
+        function initUserName() {
+            let savedName = localStorage.getItem('blessed_wig_user_name');
+            const nameElement = document.getElementById('displayed-user-name');
+            const askNameInput = document.getElementById('askCustomerName');
+            
+            if (savedName && savedName.trim() !== '') {
+                nameElement.textContent = savedName;
+                if (askNameInput) askNameInput.value = savedName;
+            } else {
+                nameElement.textContent = 'Gorgeous';
+            }
+        }
+
+        function promptUserName() {
+            let current = localStorage.getItem('blessed_wig_user_name') || '';
+            let newName = prompt('What is your name, gorgeous?', current);
+            if (newName && newName.trim() !== '') {
+                localStorage.setItem('blessed_wig_user_name', newName.trim());
+                document.getElementById('displayed-user-name').textContent = newName.trim();
+                const askNameInput = document.getElementById('askCustomerName');
+                if (askNameInput) askNameInput.value = newName.trim();
+            }
+        }
+
+        // Key 2 = Ask Modal Handling
+        function openAskModal(productId, wigName) {
+            document.getElementById('askModal').classList.remove('hidden');
+            document.getElementById('askFormProductId').value = productId;
+            document.getElementById('askModalWigId').textContent = '#' + productId;
+            document.getElementById('askModalWigTitle').textContent = wigName || 'Luxury Wig';
+        }
+
+        function closeAskModal() {
+            document.getElementById('askModal').classList.add('hidden');
+        }
+
+        function fillQuickQuestion(text) {
+            const textarea = document.querySelector('textarea[name="message"]');
+            if (textarea) {
+                textarea.value = text;
+                textarea.focus();
+            }
+        }
+
+        // Close modal on click outside
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('askModal');
+            if (e.target === modal) {
+                closeAskModal();
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initUserName);
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+

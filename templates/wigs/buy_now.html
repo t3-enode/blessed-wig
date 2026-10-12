@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout & Payment • {{ wig.name }} | {{ store_settings.store_name }}{% endblock %}
+
+{% block content %}
+<div class="bg-white min-h-screen py-10">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+        
+        <!-- Back Navigation & Breadcrumb -->
+        <div class="mb-6 flex items-center justify-between text-xs text-gray-500">
+            <a href="{% url 'wigs:index' %}" class="inline-flex items-center gap-1.5 text-burgundy hover:text-burntorange font-semibold transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span>Back to Wigs Collection</span>
+            </a>
+            <span class="font-mono text-gray-400">Order Ref: #WIG-{{ wig.product_id }}</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Column: Shipping Address & Payment Form (7 Cols) -->
+            <div class="lg:col-span-7 bg-white rounded-3xl border border-milk-border p-6 sm:p-8 shadow-sm">
+                
+                <div class="mb-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-buygreen-light text-buygreen text-xs font-bold mb-2">
+                        <span>🟢 Secure Bank Transfer Checkout</span>
+                    </div>
+                    <h1 class="font-serif text-3xl font-bold text-burgundy">Shipping & Payment</h1>
+                    <p class="text-xs text-gray-500 mt-1">Please fill your delivery details and choose your preferred bank for the direct transfer.</p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" class="space-y-5" id="checkoutForm">
+                    {% csrf_token %}
+
+                    <!-- Customer Identity -->
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-burgundy border-b border-milk-border pb-2">1. Customer Information</h3>
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Full Name *</label>
+                            <input type="text" name="customer_name" id="checkoutName" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30" placeholder="e.g. Chioma Adeyemi">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Phone Number (WhatsApp) *</label>
+                                <input type="tel" name="customer_phone" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30" placeholder="+234 800 123 4567">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Email Address *</label>
+                                <input type="email" name="customer_email" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30" placeholder="chioma@example.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="space-y-4 pt-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-burgundy border-b border-milk-border pb-2">2. Delivery Address</h3>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Street Address / House Number *</label>
+                            <textarea name="shipping_address" rows="2" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30" placeholder="e.g. Flat 4B, Emerald Court, Lekki Phase 1"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">City / Area *</label>
+                                <input type="text" name="city" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30" placeholder="e.g. Lekki / Ikeja">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">State / Province *</label>
+                                <input type="text" name="state" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30" placeholder="e.g. Lagos State">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Delivery Notes / Cap Size (Optional)</label>
+                            <input type="text" name="delivery_notes" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-burntorange focus:ring-1 focus:ring-burntorange outline-none bg-milk/30" placeholder="e.g. Medium cap size (22 inches), gate code...">
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Choose Bank & Upload Receipt -->
+                    <div class="space-y-4 pt-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-burgundy border-b border-milk-border pb-2">3. Payment & Transfer Proof</h3>
+
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Select Bank You Transferred To *</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label class="p-3.5 rounded-2xl border-2 border-burntorange bg-silkpink-soft/30 cursor-pointer flex items-center gap-3">
+                                <input type="radio" name="bank_selected" value="{{ store_settings.bank_1_name }}" checked class="text-burntorange focus:ring-burntorange">
+                                <div class="text-xs">
+                                    <div class="font-bold text-burgundy">{{ store_settings.bank_1_name }}</div>
+                                    <div class="font-mono text-gray-600">{{ store_settings.bank_1_account_number }}</div>
+                                </div>
+                            </label>
+                            <label class="p-3.5 rounded-2xl border border-milk-border bg-white hover:border-burntorange cursor-pointer flex items-center gap-3">
+                                <input type="radio" name="bank_selected" value="{{ store_settings.bank_2_name }}" class="text-burntorange focus:ring-burntorange">
+                                <div class="text-xs">
+                                    <div class="font-bold text-burgundy">{{ store_settings.bank_2_name }}</div>
+                                    <div class="font-mono text-gray-600">{{ store_settings.bank_2_account_number }}</div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Upload Payment Receipt / Transfer Screenshot</label>
+                            <div class="border-2 border-dashed border-gray-200 rounded-2xl p-4 text-center hover:border-burntorange transition-colors bg-milk/20">
+                                <input type="file" name="payment_receipt" id="payment_receipt" accept="image/*,.pdf" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-burgundy file:text-white hover:file:bg-burgundy-light cursor-pointer">
+                                <p class="text-[11px] text-gray-400 mt-2">Upload screenshot from your banking app for fastest verification.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-4">
+                        <button type="submit" class="w-full bg-buygreen hover:bg-buygreen-hover text-white font-bold py-4 rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-base">
+                            <svg class="w-5 h-5 text-emerald-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>I Have Paid & Confirm My Order</span>
+                        </button>
+                        <p class="text-center text-[11px] text-gray-400 mt-2">
+                            Admin will immediately receive your payment notification with Product ID: #{{ wig.product_id }}
+                        </p>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- Right Column: Order Summary & The 2 Bank Accounts (5 Cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Order Product Summary Card -->
+                <div class="bg-white rounded-3xl border border-milk-border p-6 shadow-sm">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-burgundy mb-4 border-b border-milk-border pb-2">Order Summary</h3>
+                    
+                    <div class="flex gap-4 items-center mb-4">
+                        <div class="w-20 h-24 rounded-2xl overflow-hidden bg-milk flex-shrink-0 border border-milk-border">
+                            {% if wig.main_image %}
+                            <img src="{{ wig.main_image.url }}" alt="{{ wig.name }}" class="w-full h-full object-cover">
+                            {% endif %}
+                        </div>
+                        <div class="flex-1">
+                            <span class="text-[10px] font-mono text-burntorange font-bold uppercase">#{{ wig.product_id }}</span>
+                            <h4 class="font-serif text-lg font-bold text-burgundy leading-snug">{{ wig.name }}</h4>
+                            <p class="text-xs text-gray-500">{{ wig.length_inches }}" • {{ wig.color }}</p>
+                            <p class="text-xs text-gray-500">{{ wig.make }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Price Calculations -->
+                    <div class="space-y-2 text-xs border-t border-milk-border pt-4">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Original Retail Price:</span>
+                            <span class="line-through">{{ store_settings.currency_symbol }}{{ wig.original_price|floatformat:2 }}</span>
+                        </div>
+                        <div class="flex justify-between text-burntorange font-semibold bg-silkpink-soft/50 p-2 rounded-xl">
+                            <span>Promotional Discount (6% OFF):</span>
+                            <span>-{{ store_settings.currency_symbol }}{{ wig.savings_amount|floatformat:2 }}</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Delivery Fee:</span>
+                            <span class="text-buygreen font-semibold">Calculated on dispatch</span>
+                        </div>
+                        <div class="flex justify-between items-baseline pt-2 border-t border-milk-border text-base font-bold text-burgundy">
+                            <span>Total Payable:</span>
+                            <span class="font-serif text-2xl text-burgundy">{{ store_settings.currency_symbol }}{{ wig.discount_price|floatformat:2 }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- THE 2 BANK DETAILS (Prominently Styled with 1-Click Copy) -->
+                <div class="bg-milk rounded-3xl border border-milk-border p-6 shadow-sm space-y-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-buygreen animate-pulse"></span>
+                        <h3 class="font-serif text-xl font-bold text-burgundy">Official Bank Accounts</h3>
+                    </div>
+                    <p class="text-xs text-gray-600">Transfer exactly <strong class="text-burgundy">{{ store_settings.currency_symbol }}{{ wig.discount_price|floatformat:2 }}</strong> to either account:</p>
+
+                    <!-- Bank 1 -->
+                    <div class="bg-white p-4 rounded-2xl border border-milk-border relative group">
+                        <div class="text-[10px] uppercase font-bold text-burgundy tracking-wider mb-1">Option 1</div>
+                        <div class="font-bold text-sm text-gray-900">{{ store_settings.bank_1_name }}</div>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="font-mono text-lg font-bold text-burntorange tracking-wider" id="acct1">{{ store_settings.bank_1_account_number }}</span>
+                            <button type="button" onclick="copyAccount('{{ store_settings.bank_1_account_number }}', this)" class="px-3 py-1 bg-milk hover:bg-burntorange hover:text-white rounded-lg text-xs font-semibold text-gray-700 transition-all border border-milk-border">
+                                Copy
+                            </button>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">Account Name: <strong class="text-gray-800">{{ store_settings.bank_1_account_name }}</strong></div>
+                    </div>
+
+                    <!-- Bank 2 -->
+                    <div class="bg-white p-4 rounded-2xl border border-milk-border relative group">
+                        <div class="text-[10px] uppercase font-bold text-burgundy tracking-wider mb-1">Option 2</div>
+                        <div class="font-bold text-sm text-gray-900">{{ store_settings.bank_2_name }}</div>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="font-mono text-lg font-bold text-burntorange tracking-wider" id="acct2">{{ store_settings.bank_2_account_number }}</span>
+                            <button type="button" onclick="copyAccount('{{ store_settings.bank_2_account_number }}', this)" class="px-3 py-1 bg-milk hover:bg-burntorange hover:text-white rounded-lg text-xs font-semibold text-gray-700 transition-all border border-milk-border">
+                                Copy
+                            </button>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">Account Name: <strong class="text-gray-800">{{ store_settings.bank_2_account_name }}</strong></div>
+                    </div>
+
+                    <!-- Trust Note -->
+                    <div class="p-3 bg-silkpink-soft/60 rounded-xl text-[11px] text-gray-600 border border-silkpink/40 flex items-start gap-2">
+                        <span class="text-burgundy text-sm">🛡️</span>
+                        <span>100% Guaranteed Transaction. If not satisfied, you can request a full refund via our Refund Portal anytime.</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function copyAccount(accNumber, btn) {
+        navigator.clipboard.writeText(accNumber).then(() => {
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.classList.add('bg-buygreen', 'text-white');
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('bg-buygreen', 'text-white');
+            }, 2000);
+        });
+    }
+
+    // Auto-fill customer name if saved in localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedName = localStorage.getItem('blessed_wig_user_name');
+        if (savedName) {
+            const nameInput = document.getElementById('checkoutName');
+            if (nameInput && !nameInput.value) {
+                nameInput.value = savedName;
+            }
+        }
+    });
+</script>
+{% endblock %}

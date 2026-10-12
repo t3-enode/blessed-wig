@@ -1,0 +1,24 @@
+# Python / Virtualenv
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment files
+.env
+
+# SQLite local DB
+db.sqlite3
+
+# Static collected cache
+staticfiles/
+
+# Media uploads (optional: in production use S3/Cloudinary)
+# media/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
